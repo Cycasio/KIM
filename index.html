@@ -77,6 +77,73 @@
         <li>「匯出結果」會輸出為 JSON，便於留存或貼回報告。</li>
       </ul>
     </section>
+
+    <section class="panel niosh">
+      <header>
+        <div>
+          <p class="label">NIOSH</p>
+          <h2>NIOSH 抬舉公式</h2>
+          <p class="hint">依 23 kg 負荷常數計算建議可抬重量（RWL）與提抬指數（LI）。輸入下列參數即可即時計算。</p>
+        </div>
+      </header>
+
+      <div class="grid niosh-grid">
+        <label class="field">
+          <span>實際負重（kg）</span>
+          <input type="number" id="nioshLoad" min="0" step="0.1" value="10" />
+        </label>
+        <label class="field">
+          <span>水平距離 H（cm）</span>
+          <input type="number" id="nioshH" min="1" step="1" value="25" />
+        </label>
+        <label class="field">
+          <span>起始垂直高度 V（cm）</span>
+          <input type="number" id="nioshV" min="0" step="1" value="75" />
+        </label>
+        <label class="field">
+          <span>垂直移動距離 D（cm）</span>
+          <input type="number" id="nioshD" min="1" step="1" value="25" />
+        </label>
+        <label class="field">
+          <span>身體扭轉角 A（°）</span>
+          <input type="number" id="nioshA" min="0" max="135" step="1" value="0" />
+        </label>
+        <label class="field">
+          <span>頻率倍數 FM</span>
+          <select id="nioshFM">
+            <option value="1">≤ 0.2 次/分（輕頻率）</option>
+            <option value="0.95">0.2–0.5 次/分</option>
+            <option value="0.9">0.5–1 次/分</option>
+            <option value="0.85">1–2 次/分</option>
+            <option value="0.75">2–3 次/分</option>
+            <option value="0.6">> 3 次/分</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>抓握/耦合倍數 CM</span>
+          <select id="nioshCM">
+            <option value="1">良好（有手柄、乾燥、易抓握）</option>
+            <option value="0.95">可接受（普通抓握）</option>
+            <option value="0.9">困難（滑手、體積大、不易握）</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="nioshtip">HM = 25/H；VM = 1 − 0.003 × |V − 75|；DM = 0.82 + 4.5/D；AM = 1 − 0.0032 × A；RWL = 23 × HM × VM × DM × AM × FM × CM。</div>
+
+      <div class="niosh-results">
+        <div class="result-card">
+          <p class="label">建議可抬重量 (RWL)</p>
+          <p class="value" id="rwlValue">0 kg</p>
+          <p class="hint">達到或高於 0 時表示計算成功。</p>
+        </div>
+        <div class="result-card">
+          <p class="label">提抬指數 (LI)</p>
+          <p class="value" id="liValue">0</p>
+          <p class="hint" id="liHint">低於 1 一般視為可接受；超過 1 需評估改善。</p>
+        </div>
+      </div>
+    </section>
   </main>
   <script src="script.js"></script>
 </body>

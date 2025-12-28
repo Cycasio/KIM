@@ -9,6 +9,18 @@ const thresholdInputs = {
 };
 const resetBtn = document.querySelector('#resetBtn');
 const exportBtn = document.querySelector('#exportBtn');
+const nioshInputs = {
+  load: document.querySelector('#nioshLoad'),
+  h: document.querySelector('#nioshH'),
+  v: document.querySelector('#nioshV'),
+  d: document.querySelector('#nioshD'),
+  a: document.querySelector('#nioshA'),
+  fm: document.querySelector('#nioshFM'),
+  cm: document.querySelector('#nioshCM')
+};
+const rwlValueEl = document.querySelector('#rwlValue');
+const liValueEl = document.querySelector('#liValue');
+const liHintEl = document.querySelector('#liHint');
 
 const factorTemplate = [
   {
@@ -218,12 +230,50 @@ function exportResult() {
   URL.revokeObjectURL(url);
 }
 
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+function calculateNiosh() {
+  const load = Number(nioshInputs.load.value) || 0;
+  const H = Number(nioshInputs.h.value) || 0;
+  const V = Number(nioshInputs.v.value) || 0;
+  const D = Number(nioshInputs.d.value) || 0;
+  const A = Number(nioshInputs.a.value) || 0;
+  const FM = Number(nioshInputs.fm.value) || 0;
+  const CM = Number(nioshInputs.cm.value) || 0;
+
+  const HM = H > 0 ? clamp(25 / H, 0, 1) : 0;
+  const VM = clamp(1 - 0.003 * Math.abs(V - 75), 0, 1);
+  const DM = D > 0 ? clamp(0.82 + 4.5 / D, 0, 1) : 0;
+  const AM = clamp(1 - 0.0032 * A, 0, 1);
+
+  const RWL = 23 * HM * VM * DM * AM * FM * CM;
+  const roundedRWL = RWL > 0 ? RWL.toFixed(2) : '0';
+  rwlValueEl.textContent = `${roundedRWL} kg`;
+
+  const LI = RWL > 0 ? load / RWL : 0;
+  const roundedLI = LI ? LI.toFixed(2) : '0';
+  liValueEl.textContent = roundedLI;
+
+  if (!RWL || RWL <= 0) {
+    liHintEl.textContent = '請檢查輸入值（距離/角度需大於 0）才能計算。';
+    return;
+  }
+
+  liHintEl.textContent = LI <= 1
+    ? '低於或等於 1：一般視為可接受風險。'
+    : '超過 1：建議調整姿勢、頻率或重量以降低風險。';
+}
+
 function init() {
   renderFactors();
   calculateTotal();
   Object.values(thresholdInputs).forEach((input) => input.addEventListener('input', syncThresholds));
   resetBtn.addEventListener('click', resetForm);
   exportBtn.addEventListener('click', exportResult);
+  Object.values(nioshInputs).forEach((input) => input?.addEventListener('input', calculateNiosh));
+  calculateNiosh();
 }
 
 init();
