@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KIM-LHC 計算器</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">KIM-LHC</p>
+        <h1>提舉/搬運作業風險指標計算器</h1>
+        <p class="lede">
+          將 PDF 內的指標點數化，並快速得到總分與風險級別。
+          預設分級可自行調整，以符合實際現場或新版 KIM-LHC 表格。
+        </p>
+        <div class="hero-actions">
+          <button id="resetBtn" class="ghost">重設</button>
+          <button id="exportBtn" class="primary">匯出結果</button>
+        </div>
+      </div>
+      <div class="summary-card" id="summaryCard">
+        <p class="label">目前總分</p>
+        <p class="score" id="totalScore">0</p>
+        <p class="risk" id="riskLevel">未設定</p>
+        <p class="hint">依據下方指標即時更新</p>
+      </div>
+    </header>
+
+    <section class="panel">
+      <header>
+        <div>
+          <p class="label">風險級距</p>
+          <h2>自訂風險等級</h2>
+          <p class="hint">預設為 KIM-LHC 原文四級分級：第 1 級 ＜ 20；第 2 級 20–49；第 3 級 50–99；第 4 級 ≧ 100。若有企業內規或新版本請自行調整。</p>
+        </div>
+      </header>
+      <div class="grid thresholds">
+        <label class="field">
+          <span>第 1 級上限</span>
+          <input type="number" id="lowThreshold" min="0" value="19" />
+        </label>
+        <label class="field">
+          <span>第 2 級上限</span>
+          <input type="number" id="mediumThreshold" min="0" value="49" />
+        </label>
+        <label class="field">
+          <span>第 3 級上限</span>
+          <input type="number" id="highThreshold" min="0" value="99" />
+        </label>
+      </div>
+    </section>
+
+    <section class="panel">
+      <header>
+        <div>
+          <p class="label">指標選項</p>
+          <h2>依 PDF 逐項填入點數</h2>
+          <p class="hint">各項選項分數可依 PDF 內容修改，計算方式為所有點數相加。</p>
+        </div>
+        <div class="chip">合計即時更新</div>
+      </header>
+
+      <div class="factor-list" id="factorList"></div>
+    </section>
+
+    <section class="panel notes">
+      <h3>使用說明</h3>
+      <ul>
+        <li>預設選項參考常見 KIM-LHC 權重，實際評估時請依官方 PDF 核對後再使用。</li>
+        <li>若 PDF 有更新或公司內部有額外指標，可點選「自訂分數」輸入正確的點數。</li>
+        <li>「匯出結果」會輸出為 JSON，便於留存或貼回報告。</li>
+      </ul>
+    </section>
+
+    <section class="panel niosh">
+      <header>
+        <div>
+          <p class="label">NIOSH</p>
+          <h2>NIOSH 抬舉公式</h2>
+          <p class="hint">依 23 kg 負荷常數計算建議可抬重量（RWL）與提抬指數（LI）。輸入下列參數即可即時計算。</p>
+        </div>
+      </header>
+
+      <div class="grid niosh-grid">
+        <label class="field">
+          <span>實際負重（kg）</span>
+          <input type="number" id="nioshLoad" min="0" step="0.1" value="10" />
+        </label>
+        <label class="field">
+          <span>水平距離 H（cm）</span>
+          <input type="number" id="nioshH" min="1" step="1" value="25" />
+        </label>
+        <label class="field">
+          <span>起始垂直高度 V（cm）</span>
+          <input type="number" id="nioshV" min="0" step="1" value="75" />
+        </label>
+        <label class="field">
+          <span>垂直移動距離 D（cm）</span>
+          <input type="number" id="nioshD" min="1" step="1" value="25" />
+        </label>
+        <label class="field">
+          <span>身體扭轉角 A（°）</span>
+          <input type="number" id="nioshA" min="0" max="135" step="1" value="0" />
+        </label>
+        <label class="field">
+          <span>頻率倍數 FM</span>
+          <select id="nioshFM">
+            <option value="1">≤ 0.2 次/分（輕頻率）</option>
+            <option value="0.95">0.2–0.5 次/分</option>
+            <option value="0.9">0.5–1 次/分</option>
+            <option value="0.85">1–2 次/分</option>
+            <option value="0.75">2–3 次/分</option>
+            <option value="0.6">> 3 次/分</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>抓握/耦合倍數 CM</span>
+          <select id="nioshCM">
+            <option value="1">良好（有手柄、乾燥、易抓握）</option>
+            <option value="0.95">可接受（普通抓握）</option>
+            <option value="0.9">困難（滑手、體積大、不易握）</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="nioshtip">HM = 25/H；VM = 1 − 0.003 × |V − 75|；DM = 0.82 + 4.5/D；AM = 1 − 0.0032 × A；RWL = 23 × HM × VM × DM × AM × FM × CM。</div>
+
+      <div class="niosh-results">
+        <div class="result-card">
+          <p class="label">建議可抬重量 (RWL)</p>
+          <p class="value" id="rwlValue">0 kg</p>
+          <p class="hint">達到或高於 0 時表示計算成功。</p>
+        </div>
+        <div class="result-card">
+          <p class="label">提抬指數 (LI)</p>
+          <p class="value" id="liValue">0</p>
+          <p class="hint" id="liHint">低於 1 一般視為可接受；超過 1 需評估改善。</p>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
