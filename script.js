@@ -235,25 +235,33 @@ function clamp(value, min, max) {
 }
 
 function calculateNiosh() {
-  const load = Number(nioshInputs.load.value) || 0;
-  const H = Number(nioshInputs.h.value) || 0;
-  const V = Number(nioshInputs.v.value) || 0;
-  const D = Number(nioshInputs.d.value) || 0;
-  const A = Number(nioshInputs.a.value) || 0;
-  const FM = Number(nioshInputs.fm.value) || 0;
-  const CM = Number(nioshInputs.cm.value) || 0;
+  const load = Number(nioshInputs.load.value);
+  const H = Number(nioshInputs.h.value);
+  const V = Number(nioshInputs.v.value);
+  const D = Number(nioshInputs.d.value);
+  const A = Number(nioshInputs.a.value);
+  const FM = Number(nioshInputs.fm.value);
+  const CM = Number(nioshInputs.cm.value);
 
-  const HM = H > 0 ? clamp(25 / H, 0, 1) : 0;
+  const invalid = [H, V, D, FM, CM].some((val) => Number.isNaN(val) || val <= 0);
+  if (invalid || Number.isNaN(load) || Number.isNaN(A)) {
+    rwlValueEl.textContent = '0 kg';
+    liValueEl.textContent = '—';
+    liHintEl.textContent = '請填寫有效的距離/倍數數值（需大於 0）以計算 RWL 與 LI。';
+    return;
+  }
+
+  const HM = clamp(25 / H, 0, 1);
   const VM = clamp(1 - 0.003 * Math.abs(V - 75), 0, 1);
-  const DM = D > 0 ? clamp(0.82 + 4.5 / D, 0, 1) : 0;
-  const AM = clamp(1 - 0.0032 * A, 0, 1);
+  const DM = clamp(0.82 + 4.5 / D, 0, 1);
+  const AM = clamp(1 - 0.0032 * Math.abs(A), 0, 1);
 
   const RWL = 23 * HM * VM * DM * AM * FM * CM;
   const roundedRWL = RWL > 0 ? RWL.toFixed(2) : '0';
   rwlValueEl.textContent = `${roundedRWL} kg`;
 
   const LI = RWL > 0 ? load / RWL : 0;
-  const roundedLI = LI ? LI.toFixed(2) : '0';
+  const roundedLI = LI ? LI.toFixed(2) : '—';
   liValueEl.textContent = roundedLI;
 
   if (!RWL || RWL <= 0) {
@@ -272,7 +280,10 @@ function init() {
   Object.values(thresholdInputs).forEach((input) => input.addEventListener('input', syncThresholds));
   resetBtn.addEventListener('click', resetForm);
   exportBtn.addEventListener('click', exportResult);
-  Object.values(nioshInputs).forEach((input) => input?.addEventListener('input', calculateNiosh));
+  Object.values(nioshInputs).forEach((input) => {
+    input?.addEventListener('input', calculateNiosh);
+    input?.addEventListener('change', calculateNiosh);
+  });
   calculateNiosh();
 }
 
