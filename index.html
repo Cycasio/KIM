@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KIM-LHC 計算器</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">KIM-LHC</p>
+        <h1>提舉/搬運作業風險指標計算器</h1>
+        <p class="lede">
+          將 PDF 內的指標點數化，並快速得到總分與風險級別。
+          預設分級可自行調整，以符合實際現場或新版 KIM-LHC 表格。
+        </p>
+        <div class="hero-actions">
+          <button id="resetBtn" class="ghost">重設</button>
+          <button id="exportBtn" class="primary">匯出結果</button>
+        </div>
+      </div>
+      <div class="summary-card" id="summaryCard">
+        <p class="label">目前總分</p>
+        <p class="score" id="totalScore">0</p>
+        <p class="risk" id="riskLevel">未設定</p>
+        <p class="hint">依據下方指標即時更新</p>
+      </div>
+    </header>
+
+    <section class="panel">
+      <header>
+        <div>
+          <p class="label">風險級距</p>
+          <h2>自訂風險等級</h2>
+          <p class="hint">預設為 KIM-LHC 常見三階分級，若有企業內規或新版本請自行調整。</p>
+        </div>
+      </header>
+      <div class="grid thresholds">
+        <label class="field">
+          <span>低風險上限</span>
+          <input type="number" id="lowThreshold" min="0" value="19" />
+        </label>
+        <label class="field">
+          <span>中風險上限</span>
+          <input type="number" id="mediumThreshold" min="0" value="44" />
+        </label>
+        <label class="field">
+          <span>高風險上限</span>
+          <input type="number" id="highThreshold" min="0" value="69" />
+        </label>
+      </div>
+    </section>
+
+    <section class="panel">
+      <header>
+        <div>
+          <p class="label">指標選項</p>
+          <h2>依 PDF 逐項填入點數</h2>
+          <p class="hint">各項選項分數可依 PDF 內容修改，計算方式為所有點數相加。</p>
+        </div>
+        <div class="chip">合計即時更新</div>
+      </header>
+
+      <div class="factor-list" id="factorList"></div>
+    </section>
+
+    <section class="panel notes">
+      <h3>使用說明</h3>
+      <ul>
+        <li>預設選項參考常見 KIM-LHC 權重，實際評估時請依官方 PDF 核對後再使用。</li>
+        <li>若 PDF 有更新或公司內部有額外指標，可點選「自訂分數」輸入正確的點數。</li>
+        <li>「匯出結果」會輸出為 JSON，便於留存或貼回報告。</li>
+      </ul>
+    </section>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
