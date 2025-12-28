@@ -10,6 +10,7 @@
   --danger: #ff6565;
   --warn: #ffc861;
   --safe: #3dd598;
+  --critical: #ff4d8f;
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
@@ -100,9 +101,18 @@ button:hover { transform: translateY(-1px); }
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
+.summary-card.safe { border-color: rgba(61, 213, 152, 0.45); }
+.summary-card.warn { border-color: rgba(255, 200, 97, 0.5); }
+.summary-card.danger { border-color: rgba(255, 101, 101, 0.55); }
+.summary-card.critical { border-color: rgba(255, 77, 143, 0.65); box-shadow: 0 0 0 1px rgba(255, 77, 143, 0.25); }
+
 .summary-card .label { color: var(--muted); margin: 0; letter-spacing: 1px; font-size: 12px; text-transform: uppercase; }
 .summary-card .score { font-size: 48px; margin: 12px 0 4px; font-weight: 800; }
 .summary-card .risk { margin: 0; font-weight: 700; color: var(--accent); }
+.summary-card.safe .risk { color: var(--safe); }
+.summary-card.warn .risk { color: var(--warn); }
+.summary-card.danger .risk { color: var(--danger); }
+.summary-card.critical .risk { color: var(--critical); }
 .summary-card .hint { margin-top: 6px; color: var(--muted); font-size: 13px; }
 
 .panel {

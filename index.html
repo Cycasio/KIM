@@ -37,21 +37,21 @@
         <div>
           <p class="label">風險級距</p>
           <h2>自訂風險等級</h2>
-          <p class="hint">預設為 KIM-LHC 常見三階分級，若有企業內規或新版本請自行調整。</p>
+          <p class="hint">預設為 KIM-LHC 原文四級分級：第 1 級 ＜ 20；第 2 級 20–49；第 3 級 50–99；第 4 級 ≧ 100。若有企業內規或新版本請自行調整。</p>
         </div>
       </header>
       <div class="grid thresholds">
         <label class="field">
-          <span>低風險上限</span>
+          <span>第 1 級上限</span>
           <input type="number" id="lowThreshold" min="0" value="19" />
         </label>
         <label class="field">
-          <span>中風險上限</span>
-          <input type="number" id="mediumThreshold" min="0" value="44" />
+          <span>第 2 級上限</span>
+          <input type="number" id="mediumThreshold" min="0" value="49" />
         </label>
         <label class="field">
-          <span>高風險上限</span>
-          <input type="number" id="highThreshold" min="0" value="69" />
+          <span>第 3 級上限</span>
+          <input type="number" id="highThreshold" min="0" value="99" />
         </label>
       </div>
     </section>

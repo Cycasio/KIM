@@ -82,7 +82,7 @@ const factorTemplate = [
 ];
 
 const state = {
-  thresholds: { low: 19, medium: 44, high: 69 },
+  thresholds: { low: 19, medium: 49, high: 99 },
   factors: {}
 };
 
@@ -172,10 +172,10 @@ function calculateTotal() {
 
 function determineRisk(total) {
   const { low, medium, high } = state.thresholds;
-  if (total <= low) return { label: '低風險', className: 'safe' };
-  if (total <= medium) return { label: '中等風險', className: 'warn' };
-  if (total <= high) return { label: '顯著風險', className: 'danger' };
-  return { label: '極高風險 (需立即介入)', className: 'danger' };
+  if (total <= low) return { label: '第 1 級：低風險/無需立即行動', className: 'safe' };
+  if (total <= medium) return { label: '第 2 級：需要進一步評估', className: 'warn' };
+  if (total <= high) return { label: '第 3 級：需採取改善措施', className: 'danger' };
+  return { label: '第 4 級：極高風險，應立即介入', className: 'critical' };
 }
 
 function syncThresholds() {
@@ -196,8 +196,8 @@ function resetForm() {
     if (badge) badge.textContent = `目前 ${defaultScore} 點`;
   });
   thresholdInputs.low.value = 19;
-  thresholdInputs.medium.value = 44;
-  thresholdInputs.high.value = 69;
+  thresholdInputs.medium.value = 49;
+  thresholdInputs.high.value = 99;
   syncThresholds();
 }
 
